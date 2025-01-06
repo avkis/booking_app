@@ -11,4 +11,4 @@ build: vet
 	go build
 
 run:
-	go run .
+	go run ./cmd/web
