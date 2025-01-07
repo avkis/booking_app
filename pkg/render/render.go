@@ -68,14 +68,12 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
 	pages, err := filepath.Glob(pathToTemplates + "*.page.tmpl")
-	fmt.Println("Pages are: ", pages)
 	if err != nil {
 		return myCache, err
 	}
 
 	for _, page := range pages {
 		name := filepath.Base(page)
-		fmt.Println("Page is currently: ", name)
 
 		// getting template set
 		ts, err := template.New(name).Funcs(functions).ParseFiles(page)
@@ -84,7 +82,6 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 		}
 
 		layouts, err := filepath.Glob(pathToTemplates + "*.layout.tmpl")
-		fmt.Println("Layouts are: ", layouts)
 		if err != nil {
 			return myCache, err
 		}
