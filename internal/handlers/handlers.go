@@ -1,14 +1,14 @@
 package handlers
 
 import (
-	"bookings/pkg/config"
-	"bookings/pkg/driver"
-	"bookings/pkg/forms"
-	"bookings/pkg/helpers"
-	"bookings/pkg/models"
-	"bookings/pkg/render"
-	"bookings/pkg/repository"
-	"bookings/pkg/repository/dbrepo"
+	"bookings/internal/config"
+	"bookings/internal/driver"
+	"bookings/internal/forms"
+	"bookings/internal/helpers"
+	"bookings/internal/models"
+	"bookings/internal/render"
+	"bookings/internal/repository"
+	"bookings/internal/repository/dbrepo"
 	"encoding/json"
 	"fmt"
 	"net/http"

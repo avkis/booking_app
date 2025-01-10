@@ -1,12 +1,12 @@
 package main
 
 import (
-	"bookings/pkg/config"
-	"bookings/pkg/driver"
-	"bookings/pkg/handlers"
-	"bookings/pkg/helpers"
-	"bookings/pkg/models"
-	"bookings/pkg/render"
+	"bookings/internal/config"
+	"bookings/internal/driver"
+	"bookings/internal/handlers"
+	"bookings/internal/helpers"
+	"bookings/internal/models"
+	"bookings/internal/render"
 	"encoding/gob"
 	"fmt"
 	"log"

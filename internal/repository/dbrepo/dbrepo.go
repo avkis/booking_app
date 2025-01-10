@@ -1,8 +1,8 @@
 package dbrepo
 
 import (
-	"bookings/pkg/config"
-	"bookings/pkg/repository"
+	"bookings/internal/config"
+	"bookings/internal/repository"
 	"database/sql"
 )
 
