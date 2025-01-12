@@ -12,3 +12,12 @@ build: vet
 
 run:
 	go run ./cmd/web
+
+test:
+	go test -v ./cmd/web
+
+test_cover:
+	go test -cover ./cmd/web
+
+test_cover_html:
+	go test -coverprofile=coverage.out ./cmd/web && go tool cover -html=coverage.out
