@@ -26,6 +26,8 @@ go.work.sum
 
 # Storage
 /storage/
+db-data/
+database.yml
 
 # Tests
 coverage.out
