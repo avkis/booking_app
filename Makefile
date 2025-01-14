@@ -21,3 +21,10 @@ test_cover:
 
 test_cover_html:
 	go test -coverprofile=coverage.out ./cmd/web && go tool cover -html=coverage.out
+
+migrate:
+	soda migrate
+
+migrate_down:
+	soda migrate down
+

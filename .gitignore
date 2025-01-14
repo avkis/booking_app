@@ -31,3 +31,6 @@ database.yml
 
 # Tests
 coverage.out
+
+# IDEs
+.vscode/
