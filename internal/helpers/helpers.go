@@ -36,3 +36,11 @@ func ConvertStringToDate(str_date string) (time.Time, error) {
 
 	return date, nil
 }
+
+func ConvertDateToString(date time.Time) string {
+	// 2006-01-02 <- 01/02 03:04:05PM '06 -0700
+	layout := "2006-01-02"
+	str_date := date.Format(layout)
+
+	return str_date
+}
