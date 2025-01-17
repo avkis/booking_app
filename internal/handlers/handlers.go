@@ -217,16 +217,88 @@ func (m *Repository) ChooseRoom(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
 }
 
+// BookRoom takes URL parameters, builds a session variable, and takes user to make res screen
+func (m *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
+
+	roomID, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	startDate, err := helpers.ConvertStringToDate(r.URL.Query().Get("sd"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+	endDate, err := helpers.ConvertStringToDate(r.URL.Query().Get("ed"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	room, err := m.DB.GetRoomByID(roomID)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	var reservation models.Reservation
+
+	reservation.RoomID = roomID
+	reservation.StartDate = startDate
+	reservation.EndDate = endDate
+	reservation.Room.RoomName = room.RoomName
+	m.App.Session.Put(r.Context(), "reservation", reservation)
+
+	http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
+}
+
 type jsonResponse struct {
-	OK      bool   `json:"ok"`
-	Message string `json:"message"`
+	OK        bool   `json:"ok"`
+	Message   string `json:"message"`
+	RoomID    string `json:"room_id"`
+	StartDate string `json:"start_date"`
+	EndDate   string `json:"end_date"`
 }
 
 // AvailabilityJSON handles request for availability and sends JSON response
 func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
+	sd := r.Form.Get("start")
+	ed := r.Form.Get("end")
+
+	startDate, err := helpers.ConvertStringToDate(sd)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+	endDate, err := helpers.ConvertStringToDate(ed)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	roomId, _ := strconv.Atoi(r.Form.Get("room_id"))
+
+	isRoomAvailable, err := m.DB.SearchAvailabilityByDatesByRoomID(startDate, endDate, roomId)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	var message string
+	if isRoomAvailable {
+		message = "Available!"
+	} else {
+		message = "Not Available!"
+	}
+
 	resp := jsonResponse{
-		OK:      true,
-		Message: "Available!",
+		OK:        isRoomAvailable,
+		Message:   message,
+		RoomID:    strconv.Itoa(roomId),
+		StartDate: sd,
+		EndDate:   ed,
 	}
 
 	out, err := json.MarshalIndent(resp, "", "     ")
@@ -258,10 +330,10 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	stringMap["start_date"] = helpers.ConvertDateToString(reservation.StartDate)
 	stringMap["end_date"] = helpers.ConvertDateToString(reservation.EndDate)
 
-	m.App.Session.Remove(r.Context(), "reservation")
-
 	data := make(map[string]interface{})
 	data["reservation"] = reservation
+
+	m.App.Session.Remove(r.Context(), "reservation")
 
 	render.Template(w, r, "reservation-summary.page.tmpl", &models.TemplateData{
 		Data:      data,
