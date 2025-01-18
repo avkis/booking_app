@@ -12,7 +12,6 @@ function handleCheckAvailability(event, roomId, CSRFToken) {
                         <div class="col">
                             <input disabled required class="form-control" type="text" name="end" id="end" placeholder="Departure">
                         </div>
-
                     </div>
                 </div>
             </div>

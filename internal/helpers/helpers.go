@@ -44,3 +44,7 @@ func ConvertDateToString(date time.Time) string {
 
 	return str_date
 }
+
+func IsAuthenticated(r *http.Request) bool {
+	return app.Session.Exists(r.Context(), "user_id")
+}
