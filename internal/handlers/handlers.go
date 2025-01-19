@@ -416,11 +416,29 @@ func (m *Repository) PostLogin(w http.ResponseWriter, r *http.Request) {
 func (m *Repository) Logout(w http.ResponseWriter, r *http.Request) {
 	_ = m.App.Session.Destroy(r.Context())
 	_ = m.App.Session.RenewToken(r.Context())
-	http.Redirect(w, r, "/users/login", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 // AdminDashbord renders the admin-dashboard page
 func (m *Repository) AdminDashbord(w http.ResponseWriter, r *http.Request) {
 
 	render.Template(w, r, "admin-dashboard.page.tmpl", &models.TemplateData{})
+}
+
+// AdminDashbord renders the admin-dashboard page
+func (m *Repository) AdminNewReservations(w http.ResponseWriter, r *http.Request) {
+
+	render.Template(w, r, "admin-new-reservations.page.tmpl", &models.TemplateData{})
+}
+
+// AdminDashbord renders the admin-dashboard page
+func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request) {
+
+	render.Template(w, r, "admin-all-reservations.page.tmpl", &models.TemplateData{})
+}
+
+// AdminReservationsCalendar renders the Admin Reservations Calendar page
+func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+
+	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})
 }

@@ -37,11 +37,11 @@
                         <a class="nav-link" href="/about">About</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownRooms" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Rooms
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownRooms">
                             <a class="dropdown-item" href="/generals-quarters">General's Quarters</a>
                             <a class="dropdown-item" href="/majors-suite">Major's Suite</a>
                         </div>
@@ -52,17 +52,20 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/contact">Contact</a>
                     </li>
-                    <li class="nav-item">
-                        {{if .IsAuthenticated}}
-                            <a class="nav-link" href="/users/logout">Logout</a>
-                        {{else}}
+                    {{if .IsAuthenticated}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAdmin" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
+                                <a class="dropdown-item" href="/admin/dashboard">Dashboard</a>
+                                <a class="dropdown-item" href="/users/logout">Logout</a>
+                            </div>
+                        </li>
+                    {{else}}
+                        <li class="nav-item">
                             <a class="nav-link" href="/users/login">Login</a>
-                        {{end}}
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/dashboard">Dashboard</a>
-                    </li>
-
+                        </li>
+                    {{end}}
                 </ul>
             </div>
         </nav>
