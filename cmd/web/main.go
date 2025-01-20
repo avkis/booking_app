@@ -44,7 +44,7 @@ func main() {
 	// 	log.Println(err)
 	// }
 
-	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
+	fmt.Printf("%s", fmt.Sprintf("Staring application on port %s\n", portNumber))
 
 	srv := &http.Server{
 		Addr:    portNumber,

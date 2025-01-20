@@ -31,4 +31,9 @@ migrate_down:
 mailhog_run:
 	docker run -d -p 8025:8025 -p 1025:1025 mailhog
 
+db_dump:
+	docker exec -i postgres_container /bin/bash -c "PGPASSWORD=password pg_dump --username user bookings" > ./db-data/dump.sql
+
+restore_db_from_dump:
+	docker exec -i postgres_container /bin/bash -c "PGPASSWORD=password psql --username user bookings" < ./db-data/dump.sql
 
