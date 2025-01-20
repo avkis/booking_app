@@ -28,3 +28,7 @@ migrate:
 migrate_down:
 	soda migrate down
 
+mailhog_run:
+	docker run -d -p 8025:8025 -p 1025:1025 mailhog
+
+

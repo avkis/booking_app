@@ -2,6 +2,7 @@ package render
 
 import (
 	"bookings/internal/config"
+	"bookings/internal/helpers"
 	"bookings/internal/models"
 	"bytes"
 	"errors"
@@ -13,7 +14,9 @@ import (
 	"github.com/justinas/nosurf"
 )
 
-var functions = template.FuncMap{}
+var functions = template.FuncMap{
+	"humanDate": helpers.ConvertDateToString,
+}
 
 var app *config.AppConfig
 var pathToTemplates = "./templates"
