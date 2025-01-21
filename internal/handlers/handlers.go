@@ -457,6 +457,36 @@ func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request
 	})
 }
 
+// AdminShowReservation renders the Reservation form
+func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request) {
+	resID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+	// exploded := strings.Split(r.RequestURI, "/")
+
+	res, err := m.DB.GetReservationByID(resID)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservation"] = res
+
+	stringMap := make(map[string]string)
+	stringMap["src"] = chi.URLParam(r, "src")
+	stringMap["start_date"] = helpers.ConvertDateToString(res.StartDate)
+	stringMap["end_date"] = helpers.ConvertDateToString(res.EndDate)
+
+	render.Template(w, r, "admin-show-reservation.page.tmpl", &models.TemplateData{
+		Data:      data,
+		Form:      forms.New(nil),
+		StringMap: stringMap,
+	})
+}
+
 // AdminReservationsCalendar renders the Admin Reservations Calendar page
 func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 
