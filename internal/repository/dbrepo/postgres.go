@@ -189,10 +189,10 @@ func (m *postgresDBRepo) UpdateUser(u models.User) error {
 			  	last_name = $3, 
 				email = $4, 
 				access_level = $5,
-				updated_at = new Date()
+				updated_at = $6
 			  WHERE id = $1`
 
-	_, err := m.DB.ExecContext(ctx, query, u.ID, u.FirstName, u.LastName, u.Email, u.AccessLevel)
+	_, err := m.DB.ExecContext(ctx, query, u.ID, u.FirstName, u.LastName, u.Email, u.AccessLevel, time.Now())
 	if err != nil {
 		return err
 	}
@@ -361,4 +361,57 @@ func (m *postgresDBRepo) GetReservationByID(id int) (models.Reservation, error) 
 	}
 
 	return reservation, nil
+}
+
+// UpdateReservation updates a reservation in the database
+func (m *postgresDBRepo) UpdateReservation(r models.Reservation) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `UPDATE reservations
+			  SET 
+			  	first_name = $2, 
+			  	last_name = $3, 
+				email = $4, 
+				phone = $5,
+				updated_at = $6,
+				processed = $7
+			  WHERE id = $1`
+
+	_, err := m.DB.ExecContext(ctx, query, r.ID, r.FirstName, r.LastName, r.Email, r.Phone, time.Now(), r.Processed)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteReservation deletes one reservation by id
+func (m *postgresDBRepo) DeleteReservation(id int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `DELETE FROM reservations  WHERE id = $1`
+
+	_, err := m.DB.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdateProcessedForReservation updates processed for a reservation by id
+func (m *postgresDBRepo) UpdateProcessedForReservation(id, processed int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `UPDATE reservations SET updatet_at = $2, processed = $3 WHERE id = $1`
+
+	_, err := m.DB.ExecContext(ctx, query, id, time.Now(), processed)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

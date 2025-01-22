@@ -487,6 +487,72 @@ func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request
 	})
 }
 
+// AdminUpdateReservation updates the reservation
+func (m *Repository) AdminUpdateReservation(w http.ResponseWriter, r *http.Request) {
+	resID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+	err = r.ParseForm()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	reservation, err := m.DB.GetReservationByID(resID)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	reservation.FirstName = r.Form.Get("first_name")
+	reservation.LastName = r.Form.Get("last_name")
+	reservation.Email = r.Form.Get("email")
+	reservation.Phone = r.Form.Get("phone")
+
+	form := forms.New(r.PostForm)
+
+	form.Required("first_name", "last_name", "email")
+	form.MinLength("first_name", 3)
+	form.IsEmail("email")
+
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+		render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+		return
+	}
+	err = m.DB.UpdateReservation(reservation)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	m.App.Session.Put(r.Context(), "flash", "Changes saved")
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations/%s", chi.URLParam(r, "src")), http.StatusSeeOther)
+}
+
+// AdminDeleteReservation deletes the reservation by id
+func (m *Repository) AdminDeleteReservation(w http.ResponseWriter, r *http.Request) {
+	resID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	err = m.DB.DeleteReservation(resID)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
+}
+
 // AdminReservationsCalendar renders the Admin Reservations Calendar page
 func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 
