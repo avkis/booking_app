@@ -536,7 +536,30 @@ func (m *Repository) AdminUpdateReservation(w http.ResponseWriter, r *http.Reque
 	http.Redirect(w, r, fmt.Sprintf("/admin/reservations/%s", chi.URLParam(r, "src")), http.StatusSeeOther)
 }
 
-// AdminDeleteReservation deletes the reservation by id
+// AdminProcessReservation marks a reservation as processed
+func (m *Repository) AdminProcessReservation(w http.ResponseWriter, r *http.Request) {
+	resID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	processed, err := strconv.Atoi(r.URL.Query().Get("processed"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	err = m.DB.UpdateProcessedForReservation(resID, processed)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations/%s", chi.URLParam(r, "src")), http.StatusSeeOther)
+}
+
+// AdminDeleteReservation deletes a reservation by id
 func (m *Repository) AdminDeleteReservation(w http.ResponseWriter, r *http.Request) {
 	resID, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
@@ -550,10 +573,11 @@ func (m *Repository) AdminDeleteReservation(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
+	m.App.Session.Put(r.Context(), "flash", "Reservation deleted")
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservations/%s", chi.URLParam(r, "src")), http.StatusSeeOther)
 }
 
-// AdminReservationsCalendar renders the Admin Reservations Calendar page
+// AdminReservationsCalendar displays the reservations calendar
 func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{})

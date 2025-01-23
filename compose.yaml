@@ -36,6 +36,14 @@ services:
     tty: true
     stdin_open: true
 
+  mailhog:
+    container_name: mailhog_container
+    build: ./MailHog
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
   
 
   # pgadmin:

@@ -406,7 +406,7 @@ func (m *postgresDBRepo) UpdateProcessedForReservation(id, processed int) error 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	query := `UPDATE reservations SET updatet_at = $2, processed = $3 WHERE id = $1`
+	query := `UPDATE reservations SET updated_at = $2, processed = $3 WHERE id = $1`
 
 	_, err := m.DB.ExecContext(ctx, query, id, time.Now(), processed)
 	if err != nil {

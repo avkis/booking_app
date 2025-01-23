@@ -34,3 +34,6 @@ coverage.out
 
 # IDEs
 .vscode/
+
+# Services
+MailHog

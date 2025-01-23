@@ -13,6 +13,7 @@
 
 .notie-container {
     box-shadow: none;
+    z-index: 1000;
 }
 
 .datepicker {
