@@ -15,7 +15,10 @@ import (
 )
 
 var functions = template.FuncMap{
-	"humanDate": helpers.ConvertDateToString,
+	"humanDate":  helpers.ConvertDateToString,
+	"formatDate": helpers.FormatDate,
+	"iterate":    helpers.Iterate,
+	"add":        helpers.Add,
 }
 
 var app *config.AppConfig

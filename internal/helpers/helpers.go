@@ -37,14 +37,33 @@ func ConvertStringToDate(str_date string) (time.Time, error) {
 	return date, nil
 }
 
-func ConvertDateToString(date time.Time) string {
+func ConvertDateToString(t time.Time) string {
 	// 2006-01-02 <- 01/02 03:04:05PM '06 -0700
 	layout := "2006-01-02"
-	str_date := date.Format(layout)
+	str_date := t.Format(layout)
 
 	return str_date
 }
 
+func FormatDate(t time.Time, f string) string {
+	return t.Format(f)
+}
+
 func IsAuthenticated(r *http.Request) bool {
 	return app.Session.Exists(r.Context(), "user_id")
+}
+
+// Iterate returns a slice of ints, starting at 1, going to count
+func Iterate(count int) []int {
+	var i int
+	var items []int
+	for i = 0; i < count; i++ {
+		items = append(items, i)
+	}
+
+	return items
+}
+
+func Add(a, b int) int {
+	return a + b
 }
