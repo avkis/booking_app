@@ -20,6 +20,9 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+// Date format
+const DateFormat = "2006-01-2"
+
 // Repo the repository used by the handlers
 var Repo *Repository
 
@@ -627,6 +630,44 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 	}
 
 	data["rooms"] = rooms
+
+	for _, room := range rooms {
+		// create maps
+		reservationMap := make(map[string]int)
+		blockMap := make(map[string]int)
+
+		for d := firstOfMonth; !d.After(lastOfMonth); d = d.AddDate(0, 0, 1) {
+			reservationMap[d.Format(DateFormat)] = 0
+			blockMap[d.Format(DateFormat)] = 0
+		}
+
+		// get all the restrictions for the current room
+		restrictions, err := m.DB.GetRestrictionsForRoomByDate(room.ID, firstOfMonth, lastOfMonth)
+		if err != nil {
+			helpers.ServerError(w, err)
+			return
+		}
+
+		for _, restr := range restrictions {
+			if restr.ReservationID > 0 {
+				// it's a reservation
+				for d := restr.StartDate; !d.After(restr.EndDate); d = d.AddDate(0, 0, 1) {
+					reservationMap[d.Format(DateFormat)] = restr.ReservationID
+				}
+			} else {
+				// it's a block (restriction)
+				blockMap[restr.StartDate.Format(DateFormat)] = restr.ID
+			}
+		}
+
+		reservation_map_key := fmt.Sprintf("reservation_map_%d", room.ID)
+		block_map_key := fmt.Sprintf("block_map_%d", room.ID)
+
+		data[reservation_map_key] = reservationMap
+		data[block_map_key] = blockMap
+
+		m.App.Session.Put(r.Context(), block_map_key, blockMap)
+	}
 
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{
 		StringMap: stringMap,
