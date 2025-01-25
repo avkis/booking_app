@@ -28,7 +28,7 @@ func ServerError(w http.ResponseWriter, err error) {
 
 func ConvertStringToDate(str_date string) (time.Time, error) {
 	// 2006-01-02 -> 01/02 03:04:05PM '06 -0700
-	layout := "2006-01-02"
+	layout := "2006-01-2"
 	date, err := time.Parse(layout, str_date)
 	if err != nil {
 		return time.Time{}, err
@@ -39,7 +39,7 @@ func ConvertStringToDate(str_date string) (time.Time, error) {
 
 func ConvertDateToString(t time.Time) string {
 	// 2006-01-02 <- 01/02 03:04:05PM '06 -0700
-	layout := "2006-01-02"
+	layout := "2006-01-2"
 	str_date := t.Format(layout)
 
 	return str_date
